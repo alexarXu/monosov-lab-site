@@ -52,7 +52,7 @@ Each repeatable item has a comment above it saying "copy this block".
   under the row when the photo is clicked.
   Add only the links that person has: `data-email`, `data-github`, `data-linkedin` (handle or full URL),
   `data-scholar` (the `user=` ID from the Google Scholar profile URL, or the full URL),
-  `data-web` (a site address). Missing ones get no icon.
+  `data-web` (a site address; a plain domain opens as `http://`, write `https://…` to force HTTPS). Missing ones get no icon.
 - New page: copy any inner page, change its hero and content, and add it to `SITE.menu` in `js/site.js`.
 
 ## Hosting (DreamHost)
