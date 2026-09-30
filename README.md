@@ -63,17 +63,22 @@ To contribute, open a pull request; the site updates once it is merged into `mai
 
 One-time setup:
 
-1. In the DreamHost panel, note the website's SFTP user name and password, the host name
-   (e.g. `jh.monosovlab.org`), and the website directory (e.g. `jh.monosovlab.org`, relative to the user's home).
-2. In the GitHub repo, go to Settings → Secrets and variables → Actions and add:
+1. On your computer, create a key used only for deploys:
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/dreamhost_deploy -N ""
+   ```
+2. The DreamHost user is SFTP-only, so `ssh-copy-id` does not work. With an SFTP client (e.g. Cyberduck,
+   with hidden files shown), create `~/.ssh/authorized_keys` in the user's home, paste in the contents of
+   `~/.ssh/dreamhost_deploy.pub`, and set permissions to `700` on `.ssh` and `600` on `authorized_keys`.
+3. In the GitHub repo, go to Settings → Secrets and variables → Actions and add:
 
-   | Secret               | Value                                    |
-   |----------------------|------------------------------------------|
-   | `DREAMHOST_HOST`     | the host name                            |
-   | `DREAMHOST_USER`     | the SFTP user name                       |
-   | `DREAMHOST_PASSWORD` | the SFTP password                        |
-   | `DREAMHOST_PATH`     | the website directory, no trailing slash |
+   | Secret              | Value                                                   |
+   |---------------------|---------------------------------------------------------|
+   | `DREAMHOST_HOST`    | the host name, e.g. `jh.monosovlab.org`                 |
+   | `DREAMHOST_USER`    | the SFTP user name                                      |
+   | `DREAMHOST_PATH`    | the website directory, e.g. `/home/USER/jh.monosovlab.org` |
+   | `DREAMHOST_SSH_KEY` | the contents of `~/.ssh/dreamhost_deploy` (private key) |
 
-3. Run the workflow once from the Actions tab (Deploy to DreamHost → Run workflow) to check it works.
+4. Run the workflow once from the Actions tab (Deploy to DreamHost → Run workflow) to check it works.
 
 Deploys only add and update files; a file deleted from the repo must also be deleted on DreamHost.
