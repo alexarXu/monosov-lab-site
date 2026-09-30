@@ -1,6 +1,6 @@
 const SITE = {
   labName: "Monosov Lab",
-  university: "University",
+  university: "Johns Hopkins University",
   menu: [
     { label: "Home", href: "home.html" },
     { label: "Research", href: "research.html" },
