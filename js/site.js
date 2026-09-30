@@ -157,16 +157,65 @@ const SITE = {
     panel.classList.remove("instant");
   }
 
-  function open(person) {
-    const sameRow = current && rowEnd(person) === panel.previousElementSibling;
+  let swapTimer, rendered = null;
+  const fill = person => { body.innerHTML = render(person); rendered = person; };
+  const swap = () => {
+    clearTimeout(swapTimer);
+    if (rendered === current) { body.classList.remove("fading"); grow(); return; }
+    body.classList.add("fading");
+    swapTimer = setTimeout(() => {
+      if (!current) return;
+      fill(current);
+      body.classList.remove("fading");
+      grow();
+    }, 150);
+  };
+
+  // Leaves a copy of the panel collapsing in the old row while the real one opens in the new row.
+  const leaveGhost = () => {
+    const ghost = panel.cloneNode(true);
+    ghost.removeAttribute("id");
+    ghost.classList.add("ghost");
+    ghost.style.height = panel.offsetHeight + "px";
+    panel.before(ghost);
+    ghost.offsetHeight;
+    ghost.classList.remove("open");
+    ghost.style.height = "0px";
+    setTimeout(() => ghost.remove(), 450);
+  };
+
+  // Keeps the element still on screen while content above it collapses.
+  const anchor = (el, ms) => {
+    const top = el.getBoundingClientRect().top, end = performance.now() + ms;
+    const step = () => {
+      scrollBy(0, el.getBoundingClientRect().top - top);
+      if (performance.now() < end) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  function open(person, byHover) {
+    const shown = !panel.hidden;
+    const sameRow = shown && rowEnd(person) === panel.previousElementSibling;
     if (current) setActive(current, false);
     current = person;
     setActive(person, true);
-    body.innerHTML = render(person);
-    if (sameRow) caret(); else mount(true);
     panel.classList.add("open");
-    grow();
-    setTimeout(() => current === person && panel.scrollIntoView({ block: "nearest", behavior: "smooth" }), 400);
+    if (sameRow) {
+      caret();
+      swap();
+    } else {
+      clearTimeout(swapTimer);
+      body.classList.remove("fading");
+      if (shown) {
+        anchor(person, 450);
+        leaveGhost();
+      }
+      fill(person);
+      mount(true);
+      grow();
+    }
+    if (!byHover) setTimeout(() => current === person && panel.scrollIntoView({ block: "nearest", behavior: "smooth" }), 500);
   }
 
   function close() {
@@ -192,6 +241,15 @@ const SITE = {
     else { caret(); grow(); }
   });
 
+  const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  let hoverTimer;
+  const later = (fn, ms) => { clearTimeout(hoverTimer); hoverTimer = setTimeout(fn, ms); };
+  const cancel = () => clearTimeout(hoverTimer);
+  if (canHover) new Set(people.map(p => p.parentElement)).forEach(grid => {
+    grid.addEventListener("mouseenter", () => grid.contains(panel) && cancel());
+    grid.addEventListener("mouseleave", () => later(close, 500));
+  });
+
   people.forEach(person => {
     const photo = person.querySelector(".person-photo");
     person.classList.add("has-panel");
@@ -201,7 +259,11 @@ const SITE = {
     photo.setAttribute("aria-expanded", "false");
     photo.setAttribute("aria-label", `About ${person.querySelector("h3").textContent}`);
     const toggle = () => current === person ? close() : open(person);
-    photo.addEventListener("click", toggle);
+    if (canHover) {
+      photo.addEventListener("mouseenter", () => later(() => current !== person && open(person, true), 350));
+      photo.addEventListener("mouseleave", () => current !== person && cancel());
+    }
+    photo.addEventListener("click", () => canHover ? (cancel(), current !== person && open(person)) : toggle());
     photo.addEventListener("keydown", e => {
       if (e.key !== "Enter" && e.key !== " ") return;
       e.preventDefault();

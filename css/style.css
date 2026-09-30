@@ -291,11 +291,14 @@ body.menu-open .menu a { transform: none; transition-delay: calc(var(--i, 0) * .
   transform: translateX(-50%) rotate(45deg); transition: left .35s ease;
 }
 .person-panel.instant, .person-panel.instant::before { transition: none; }
+.person-panel.ghost { pointer-events: none; }
 .panel-inner { height: 100%; overflow: hidden; }
 .panel-body {
   display: grid; grid-template-columns: 1fr 2fr auto; gap: 48px; align-items: start;
   min-height: 230px; padding: 44px 50px 44px 0;
+  transition: opacity .15s;
 }
+.panel-body.fading { opacity: 0; }
 .panel-body h3 { font-size: 26px; font-weight: 300; letter-spacing: .04em; line-height: 1.25; }
 .panel-role {
   margin-top: 8px; font-size: 11px; font-weight: 400; letter-spacing: .2em;
