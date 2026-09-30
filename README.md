@@ -46,10 +46,15 @@ lab-website/
 
 Each repeatable item has a comment above it saying "copy this block".
 - News: add to the home page grid (keep ~4) and to `news.html`.
-- Publications: add a `.pub` block, set `data-type` to `journal`, `conference` or `preprint`,
-  and wrap lab members' names in `<b>…</b>`.
+- Publications: generated from the PI's Google Scholar profile. Run `python3 tools/update_publications.py`
+  on your own computer (Google Scholar blocks cloud servers), check `publications.html`, then commit.
+  It fills in full author lists, DOIs and open-access PDFs from OpenAlex and bolds everyone listed on `people.html`.
+  Each paper gets a DOI link (or arXiv/bioRxiv if it has no DOI), then PDF, Code and Data; add code and
+  data links in `EXTRA_LINKS` at the top of the script.
+  Anything between the `PUBLICATIONS:START` and `PUBLICATIONS:END` markers is overwritten, so fix wrong
+  Scholar entries in `FIXES` at the top of the script rather than in the HTML.
 - People: copy a `.person` block. The `<p>` is the self-introduction shown in the banner that opens
-  under the row when the photo is clicked.
+  under the row when the mouse rests on the photo (or when it is tapped on touch screens).
   Add only the links that person has: `data-email`, `data-github`, `data-linkedin` (handle or full URL),
   `data-scholar` (the `user=` ID from the Google Scholar profile URL, or the full URL),
   `data-web` (a site address; a plain domain opens as `http://`, write `https://…` to force HTTPS). Missing ones get no icon.

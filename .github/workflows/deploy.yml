@@ -38,7 +38,7 @@ jobs:
             set sftp:connect-program 'ssh -a -x -i $HOME/.ssh/id_ed25519';
             set net:max-retries 2;
             mirror --reverse --verbose --parallel=4 \
-              --exclude-glob .git* --exclude-glob .github/ \
+              --exclude-glob .git* --exclude-glob .github/ --exclude-glob tools/ \
               --exclude-glob README.md --exclude-glob .DS_Store \
               ./ $TARGET/;
             bye
