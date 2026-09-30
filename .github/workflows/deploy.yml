@@ -16,20 +16,21 @@ jobs:
       HOST: ${{ secrets.DREAMHOST_HOST }}
       USER: ${{ secrets.DREAMHOST_USER }}
       TARGET: ${{ secrets.DREAMHOST_PATH }}
+      LFTP_PASSWORD: ${{ secrets.DREAMHOST_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up SSH key
-        env:
-          SSH_KEY: ${{ secrets.DREAMHOST_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
 
-      - name: Upload site
+      - name: Upload site over SFTP
         run: |
-          rsync -avz \
-            --exclude ".git*" --exclude ".github" --exclude "README.md" --exclude ".DS_Store" \
-            ./ "$USER@$HOST:$TARGET/"
+          lftp --env-password -u "$USER" "sftp://$HOST" -e "
+            set sftp:auto-confirm yes;
+            set net:max-retries 2;
+            mirror --reverse --verbose --parallel=4 \
+              --exclude-glob .git* --exclude-glob .github/ \
+              --exclude-glob README.md --exclude-glob .DS_Store \
+              ./ $TARGET/;
+            bye
+          "

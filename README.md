@@ -58,28 +58,22 @@ Each repeatable item has a comment above it saying "copy this block".
 ## Hosting (DreamHost)
 
 The site is served from DreamHost. `.htaccess` makes `home.html` the page for the bare domain.
-Every push to `main` runs `.github/workflows/deploy.yml`, which copies the site to DreamHost over SSH.
+Every push to `main` runs `.github/workflows/deploy.yml`, which uploads the site to DreamHost over SFTP.
 To contribute, open a pull request; the site updates once it is merged into `main`.
 
 One-time setup:
 
-1. In the DreamHost panel, open the website's SFTP/SSH user and make sure SSH access is enabled.
-   Note the user name, the server host name (e.g. `iad1-shared-b7-01.dreamhost.com`), and the
-   website directory (e.g. `/home/USERNAME/example.com`).
-2. On your computer, create a key used only for deploys and install it on DreamHost:
-   ```bash
-   ssh-keygen -t ed25519 -f ~/.ssh/dreamhost_deploy -N ""
-   ssh-copy-id -i ~/.ssh/dreamhost_deploy.pub USERNAME@HOST
-   ```
-3. In the GitHub repo, go to Settings → Secrets and variables → Actions and add:
+1. In the DreamHost panel, note the website's SFTP user name and password, the host name
+   (e.g. `jh.monosovlab.org`), and the website directory (e.g. `jh.monosovlab.org`, relative to the user's home).
+2. In the GitHub repo, go to Settings → Secrets and variables → Actions and add:
 
-   | Secret              | Value                                              |
-   |---------------------|----------------------------------------------------|
-   | `DREAMHOST_HOST`    | the server host name                               |
-   | `DREAMHOST_USER`    | the SSH user name                                  |
-   | `DREAMHOST_PATH`    | the website directory, no trailing slash           |
-   | `DREAMHOST_SSH_KEY` | the contents of `~/.ssh/dreamhost_deploy` (private key) |
+   | Secret               | Value                                    |
+   |----------------------|------------------------------------------|
+   | `DREAMHOST_HOST`     | the host name                            |
+   | `DREAMHOST_USER`     | the SFTP user name                       |
+   | `DREAMHOST_PASSWORD` | the SFTP password                        |
+   | `DREAMHOST_PATH`     | the website directory, no trailing slash |
 
-4. Run the workflow once from the Actions tab (Deploy to DreamHost → Run workflow) to check it works.
+3. Run the workflow once from the Actions tab (Deploy to DreamHost → Run workflow) to check it works.
 
 Deploys only add and update files; a file deleted from the repo must also be deleted on DreamHost.
