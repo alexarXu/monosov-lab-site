@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publications · Monosov Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <section class="hero page-hero">
+    <canvas class="network" aria-hidden="true"></canvas>
+    <div class="hero-content">
+      <div class="eyebrow">Publications</div>
+      <h1>Papers &amp; Preprints</h1>
+      <p class="tagline">For a complete list, see <a href="#" style="border-bottom:1px solid">Google Scholar</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="pub-tools">
+        <input type="search" class="pub-search" placeholder="Search by title, author, venue…" aria-label="Search publications">
+        <div class="pub-filters">
+          <button class="active" data-filter="all">All</button>
+          <button data-filter="journal">Journal</button>
+          <button data-filter="conference">Conference</button>
+          <button data-filter="preprint">Preprint</button>
+        </div>
+      </div>
+
+      <div class="pub-year">
+        <div class="year-label">2026</div>
+        <div>
+          <div class="pub" data-type="conference">
+            <div class="pub-title">Title of the paper goes here: a descriptive subtitle</div>
+            <div class="pub-authors"><b>Lastname A</b>, Coauthor B, <b>Lastname C</b>, <b>PI Lastname</b></div>
+            <div class="pub-venue">Conference Name (ACRONYM) 2026 <span class="pub-type">Conference</span></div>
+            <div class="pub-links">
+              <a href="#">PDF</a><a href="#">arXiv</a><a href="#">Code</a><a href="#">BibTeX</a>
+            </div>
+          </div>
+          <div class="pub" data-type="journal">
+            <div class="pub-title">Title of the paper goes here</div>
+            <div class="pub-authors"><b>Lastname A</b>, Coauthor B, <b>PI Lastname</b></div>
+            <div class="pub-venue">Journal Name, 12(3), 45–67 <span class="pub-type">Journal</span></div>
+            <div class="pub-links">
+              <a href="#">PDF</a><a href="#">DOI</a><a href="#">Data</a>
+            </div>
+          </div>
+          <div class="pub" data-type="preprint">
+            <div class="pub-title">Title of the preprint goes here</div>
+            <div class="pub-authors"><b>Lastname A</b>, <b>Lastname B</b>, <b>PI Lastname</b></div>
+            <div class="pub-venue">arXiv preprint <span class="pub-type">Preprint</span></div>
+            <div class="pub-links">
+              <a href="#">arXiv</a><a href="#">Code</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-year">
+        <div class="year-label">2025</div>
+        <div>
+          <div class="pub" data-type="journal">
+            <div class="pub-title">Title of the paper goes here</div>
+            <div class="pub-authors">Coauthor A, <b>Lastname B</b>, <b>PI Lastname</b></div>
+            <div class="pub-venue">Journal Name <span class="pub-type">Journal</span></div>
+            <div class="pub-links">
+              <a href="#">PDF</a><a href="#">DOI</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-year">
+        <div class="year-label">2024</div>
+        <div>
+          <div class="pub" data-type="journal">
+            <div class="pub-title">Title of the paper goes here</div>
+            <div class="pub-authors"><b>PI Lastname</b>, Coauthor A, Coauthor B</div>
+            <div class="pub-venue">Journal Name <span class="pub-type">Journal</span></div>
+            <div class="pub-links">
+              <a href="#">PDF</a><a href="#">DOI</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="pub-empty">No publications match your search.</p>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+  <script src="js/site.js"></script>
+</body>
+</html>

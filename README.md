@@ -1,0 +1,85 @@
+# Lab Website
+
+A hand-built, dependency-free lab website. Plain HTML + CSS + a little JavaScript.
+Open `home.html` in a browser to preview. No build step is needed.
+
+## Files
+
+```
+lab-website/
+├── home.html           Home: intro over the animated hero, then latest news
+├── research.html       Overview, research themes (alternating image/text), funders
+├── people.html         PI, members by role, alumni, "Join the lab"
+├── publications.html   Papers by year, with search and type filter
+├── methods.html        Technique cards, software & resources list
+├── news.html           Full news archive by year
+├── css/style.css       All styling (colors & fonts at the top)
+├── js/site.js          Header, menu, footer, animations (settings at the top)
+├── images/             people/, news/, research/ (put your images here)
+└── files/              PDFs such as a CV
+```
+
+## Where to edit what
+
+| To change…                           | Edit                                            |
+|--------------------------------------|-------------------------------------------------|
+| Lab name, menu items, footer, logos  | `SITE` block at the top of `js/site.js` (once, for every page) |
+| Colors, fonts                        | `:root` block at the top of `css/style.css`     |
+| Page content                         | That page's `.html` file                        |
+
+## Replacing placeholders
+
+- **Images:** every grey box has the class `ph`. Replace it with a real image, keeping the other class:
+  ```html
+  <div class="person-photo ph">Photo</div>
+  <!-- becomes -->
+  <div class="person-photo"><img src="images/people/jane.jpg" alt="Jane Doe"></div>
+  ```
+  People photos of any size are cropped to the frame (3:4 portrait for members, 4:5 for the PI),
+  centered slightly above the middle so faces stay in view.
+- **Footer logos:** in `js/site.js`, set `src: "images/univ-logo.png"` on each logo.
+- **Hero photo instead of the network:** delete `<canvas class="network">` in the page, and in `css/style.css`
+  change the `.hero` background to `url("../images/hero.jpg") center / cover`.
+- **Network behavior:** `LINK`, `MOUSE_R` and `PUSH` in `js/site.js`.
+
+## Adding content
+
+Each repeatable item has a comment above it saying "copy this block".
+- News: add to the home page grid (keep ~4) and to `news.html`.
+- Publications: add a `.pub` block, set `data-type` to `journal`, `conference` or `preprint`,
+  and wrap lab members' names in `<b>…</b>`.
+- People: copy a `.person` block. The `<p>` is the self-introduction shown in the banner that opens
+  under the row when the photo is clicked.
+  Add only the links that person has: `data-email`, `data-github`, `data-linkedin` (handle or full URL),
+  `data-scholar` (the `user=` ID from the Google Scholar profile URL, or the full URL),
+  `data-web` (a site address). Missing ones get no icon.
+- New page: copy any inner page, change its hero and content, and add it to `SITE.menu` in `js/site.js`.
+
+## Hosting (DreamHost)
+
+The site is served from DreamHost. `.htaccess` makes `home.html` the page for the bare domain.
+Every push to `main` runs `.github/workflows/deploy.yml`, which copies the site to DreamHost over SSH.
+To contribute, open a pull request; the site updates once it is merged into `main`.
+
+One-time setup:
+
+1. In the DreamHost panel, open the website's SFTP/SSH user and make sure SSH access is enabled.
+   Note the user name, the server host name (e.g. `iad1-shared-b7-01.dreamhost.com`), and the
+   website directory (e.g. `/home/USERNAME/example.com`).
+2. On your computer, create a key used only for deploys and install it on DreamHost:
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/dreamhost_deploy -N ""
+   ssh-copy-id -i ~/.ssh/dreamhost_deploy.pub USERNAME@HOST
+   ```
+3. In the GitHub repo, go to Settings → Secrets and variables → Actions and add:
+
+   | Secret              | Value                                              |
+   |---------------------|----------------------------------------------------|
+   | `DREAMHOST_HOST`    | the server host name                               |
+   | `DREAMHOST_USER`    | the SSH user name                                  |
+   | `DREAMHOST_PATH`    | the website directory, no trailing slash           |
+   | `DREAMHOST_SSH_KEY` | the contents of `~/.ssh/dreamhost_deploy` (private key) |
+
+4. Run the workflow once from the Actions tab (Deploy to DreamHost → Run workflow) to check it works.
+
+Deploys only add and update files; a file deleted from the repo must also be deleted on DreamHost.
