@@ -8,7 +8,7 @@ Open `home.html` in a browser to preview. No build step is needed.
 ```
 lab-website/
 ├── home.html           Home: intro over the animated hero, then latest news
-├── research.html       Overview, research themes (alternating image/text), funders
+├── research.html       Overview, research themes (text, then a row of figures), funders
 ├── people.html         PI, members by role, alumni, "Join the lab"
 ├── publications.html   Papers by year, with search and type filter
 ├── methods.html        Technique cards, software & resources list

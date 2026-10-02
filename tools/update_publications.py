@@ -116,11 +116,12 @@ def match(title, works):
 
 
 def short_name(full):
-    """'Ethan S. Bromberg-Martin' -> 'ES Bromberg-Martin', matching Google Scholar's style."""
+    """'Ethan S. Bromberg-Martin' -> 'ES Bromberg-Martin', 'Yang-Yang Feng' -> 'YY Feng' (Google Scholar's style)."""
     parts = full.replace(".", " ").split()
     if len(parts) < 2:
         return full
-    return "".join(p[0].upper() for p in parts[:-1]) + " " + parts[-1]
+    given = [g for p in parts[:-1] for g in p.split("-") if g]
+    return "".join(g[0].upper() for g in given) + " " + parts[-1]
 
 
 def lab_members():

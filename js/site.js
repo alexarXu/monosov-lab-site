@@ -8,17 +8,19 @@ const SITE = {
     { label: "Publications", href: "publications.html" },
     { label: "Methods", href: "methods.html" },
     { label: "News", href: "news.html" },
+    { label: "Support", href: "support.html" },
   ],
   logos: [
     { label: "Johns Hopkins University", src: "images/JHU_logo.jpg", href: "https://www.jhu.edu/" },
-    { label: "Lab Icon", src: "", href: "home.html" },
+    { label: "Laboratory of Adaptive and Maladaptive Intelligence", src: "images/lab-logo.png", href: "home.html" },
   ],
-  address: ["Room 2XX, Maxine F. Singer Building", "3520 San Martin Dr", "Baltimore, MD 21218"],
+  address: ["Room 275, Maxine F. Singer Building", "3520 San Martin Dr", "Baltimore, MD 21218"],
   email: "ilya.monosov@gmail.com",
   footerLinks: [
     { label: "Graduate Programs", href: "https://neuroscience.jhu.edu/graduate" },
     { label: "Neuroscience Department", href: "https://neuroscience.jhu.edu/" },
-    { label: "Social Media", href: "https://x.com/MonosovLab" },
+    { label: "Find us on social media", href: "https://x.com/MonosovLab" },
+    { label: "Support Our Mission", href: "support.html" },
   ],
 };
 
@@ -67,6 +69,8 @@ const SITE = {
   const fSlot = document.getElementById("site-footer");
   if (hSlot) hSlot.outerHTML = header;
   if (fSlot) fSlot.outerHTML = footer;
+  document.querySelectorAll('[data-site="address"]').forEach(el => { el.innerHTML = SITE.address.join("<br>"); });
+  document.querySelectorAll('[data-site="email"]').forEach(el => { el.href = `mailto:${SITE.email}`; el.textContent = SITE.email; });
 
   const btn = document.querySelector(".menu-btn");
   const setMenu = open => {
@@ -270,6 +274,25 @@ const SITE = {
       toggle();
     });
   });
+})();
+
+(function lightbox() {
+  const figures = document.querySelectorAll(".theme-figures img");
+  if (!figures.length) return;
+  const box = document.createElement("div");
+  box.className = "lightbox";
+  box.innerHTML = '<img alt=""><p></p>';
+  document.body.append(box);
+  const [img, caption] = box.children;
+  const close = () => box.classList.remove("open");
+  figures.forEach(f => f.addEventListener("click", () => {
+    img.src = f.currentSrc || f.src;
+    img.alt = f.alt;
+    caption.textContent = f.closest("figure")?.querySelector("figcaption")?.textContent || "";
+    box.classList.add("open");
+  }));
+  box.addEventListener("click", close);
+  addEventListener("keydown", e => { if (e.key === "Escape") close(); });
 })();
 
 document.querySelectorAll("canvas.network").forEach(canvas => {
