@@ -3,7 +3,6 @@
 
 Titles, venues and years come from the PI's Google Scholar profile. Each paper is
 matched by title against OpenAlex to fill in the full author list and the DOI.
-Lab members listed in people.html are shown in bold.
 
 Usage (from the repo root):  python3 tools/update_publications.py
 Google Scholar blocks cloud servers, so run this on your own computer, then commit.
@@ -41,7 +40,6 @@ FIXES = {
 
 ROOT = Path(__file__).resolve().parent.parent
 PUBS = ROOT / "publications.html"
-PEOPLE = ROOT / "people.html"
 START, END = "<!-- PUBLICATIONS:START -->", "<!-- PUBLICATIONS:END -->"
 SCHOLAR_URL = f"https://scholar.google.com/citations?user={SCHOLAR_USER}&hl=en"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15"
@@ -124,28 +122,6 @@ def short_name(full):
     return "".join(g[0].upper() for g in given) + " " + parts[-1]
 
 
-def lab_members():
-    page = PEOPLE.read_text(encoding="utf-8")
-    names = re.findall(r"<h2>(.*?)</h2>", page)[:1]
-    names += re.findall(r'<div class="person[^"]*"[^>]*>.*?<h3>(.*?)</h3>', page, re.S)
-    alumni = re.search(r'<ul class="alumni">(.*?)</ul>', page, re.S)
-    if alumni:
-        names += re.findall(r"<li>(.*?)(?:<span|</li>)", alumni.group(1))
-    members = set()
-    for n in names:
-        n = re.sub(r",.*$", "", text(n))
-        if not n or "alumni name" in n.lower():
-            continue
-        parts = norm(n).split()
-        members.add((parts[-1], parts[0][0]))
-    return members
-
-
-def is_member(name, members):
-    parts = norm(name).split()
-    return len(parts) >= 2 and (parts[-1], parts[0][0]) in members
-
-
 def classify(venue, work):
     # OpenAlex often matches the preprint version of a published paper, so Scholar's venue decides.
     if not venue and work:
@@ -205,7 +181,7 @@ def links(p, work):
     return out
 
 
-def render(papers, works, members):
+def render(papers, works):
     by_year, seen = defaultdict(list), set()
     for p in papers:
         if SKIP.search(p["title"]):
@@ -222,9 +198,7 @@ def render(papers, works, members):
             authors = [short_name(a["author"]["display_name"]) for a in work["authorships"]]
         else:
             authors = [a.strip() for a in p["authors"].split(",") if a.strip()]
-        authors = ", ".join(
-            f"<b>{html.escape(a)}</b>" if is_member(a, members) else html.escape(a)
-            for a in authors if a not in ("...", "…"))
+        authors = ", ".join(html.escape(a) for a in authors if a not in ("...", "…"))
         if "..." in p["authors"] and not work:
             authors += ", …"
         kind = classify(p["venue"], work)
@@ -251,7 +225,7 @@ def render(papers, works, members):
 def main():
     papers = fetch_scholar()
     works = fetch_openalex()
-    block, count = render(papers, works, lab_members())
+    block, count = render(papers, works)
     page = PUBS.read_text(encoding="utf-8")
     if START not in page:
         sys.exit(f"{PUBS.name} has no {START} … {END} markers.")

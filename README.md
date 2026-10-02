@@ -51,7 +51,7 @@ Each repeatable item has a comment above it saying "copy this block".
   (`python3 -m http.server`), since browsers block this when `home.html` is opened as a file.
 - Publications: generated from the PI's Google Scholar profile. Run `python3 tools/update_publications.py`
   on your own computer (Google Scholar blocks cloud servers), check `publications.html`, then commit.
-  It fills in full author lists, DOIs and open-access PDFs from OpenAlex and bolds everyone listed on `people.html`.
+  It fills in full author lists, DOIs and open-access PDFs from OpenAlex.
   Each paper gets a DOI link (or arXiv/bioRxiv if it has no DOI), then PDF, Code and Data; add code and
   data links in `EXTRA_LINKS` at the top of the script.
   Anything between the `PUBLICATIONS:START` and `PUBLICATIONS:END` markers is overwritten, so fix wrong
