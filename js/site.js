@@ -29,18 +29,10 @@ const SITE = {
   const header = `
     <header class="site-header" id="header">
       <a href="home.html" class="logo">${SITE.labName}</a>
-      <button class="menu-btn" aria-label="Menu" aria-expanded="false">
-        <span class="label">Menu</span>
-        <span class="bars"><span></span><span></span><span></span></span>
-      </button>
-    </header>
-    <nav class="menu" aria-label="Main">
-      <ol>
-        ${SITE.menu.map((m, i) =>
-          `<li style="--i:${i}"><a href="${m.href}"${m.href === here ? ' class="active"' : ""}>${m.label}</a></li>`
-        ).join("")}
-      </ol>
-    </nav>`;
+      <nav class="top-nav" aria-label="Main">
+        ${SITE.menu.map(m => `<a href="${m.href}"${m.href === here ? ' class="active"' : ""}>${m.label}</a>`).join("")}
+      </nav>
+    </header>`;
   const logos = SITE.logos.map(l => l.src
     ? `<a href="${l.href}"><img src="${l.src}" alt="${l.label}"></a>`
     : `<a href="${l.href}" class="logo-ph">${l.label.replace(" ", "<br>")}</a>`
@@ -72,14 +64,6 @@ const SITE = {
   document.querySelectorAll('[data-site="address"]').forEach(el => { el.innerHTML = SITE.address.join("<br>"); });
   document.querySelectorAll('[data-site="email"]').forEach(el => { el.href = `mailto:${SITE.email}`; el.textContent = SITE.email; });
 
-  const btn = document.querySelector(".menu-btn");
-  const setMenu = open => {
-    document.body.classList.toggle("menu-open", open);
-    if (btn) btn.setAttribute("aria-expanded", open);
-  };
-  btn && btn.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
-  document.querySelectorAll(".menu a").forEach(a => a.addEventListener("click", () => setMenu(false)));
-  document.addEventListener("keydown", e => { if (e.key === "Escape") setMenu(false); });
   const top = document.querySelector(".to-top");
   top && top.addEventListener("click", e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 })();
