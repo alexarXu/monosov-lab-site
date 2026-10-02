@@ -45,7 +45,10 @@ lab-website/
 ## Adding content
 
 Each repeatable item has a comment above it saying "copy this block".
-- News: add to the home page grid (keep ~4) and to `news.html`.
+- News: add a `.news-row` to `news.html` only. The home page reads that page and shows the three newest items
+  (by year and date), the newest one large with a "Read more" link to it on the News page. Add
+  `data-img="images/news/….jpg"` to a row to give it a picture on the home page. Preview with a local server
+  (`python3 -m http.server`), since browsers block this when `home.html` is opened as a file.
 - Publications: generated from the PI's Google Scholar profile. Run `python3 tools/update_publications.py`
   on your own computer (Google Scholar blocks cloud servers), check `publications.html`, then commit.
   It fills in full author lists, DOIs and open-access PDFs from OpenAlex and bolds everyone listed on `people.html`.

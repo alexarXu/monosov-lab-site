@@ -276,6 +276,61 @@ const SITE = {
   });
 })();
 
+(function news() {
+  const MONTHS = "janfebmaraprmayjunjulaugsepoctnovdec";
+  const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const read = doc => [...doc.querySelectorAll(".year-block")].flatMap(block => {
+    const year = +block.querySelector(".year-label").textContent.trim();
+    return [...block.querySelectorAll(".news-row")].map(row => {
+      const h3 = row.querySelector("h3"), tag = h3.querySelector(".tag");
+      const date = row.querySelector(".date").textContent.trim();
+      const month = MONTHS.indexOf(date.slice(0, 3).toLowerCase()) / 3;
+      const title = [...h3.childNodes].filter(n => n !== tag).map(n => n.textContent).join("").trim();
+      return {
+        row, title, year, month,
+        when: new Date(year, Math.max(month, 0), parseInt(date.slice(3)) || 1),
+        tag: tag ? tag.textContent.trim() : "",
+        text: (row.querySelector("p") || {}).innerHTML || "",
+        img: row.dataset.img || "",
+        id: slug(`${year} ${date} ${title}`),
+      };
+    });
+  }).sort((a, b) => b.when - a.when);
+
+  if (document.querySelector(".news-row")) {
+    read(document).forEach(n => { n.row.id = n.id; });
+    const target = location.hash && document.getElementById(location.hash.slice(1));
+    if (target) {
+      target.scrollIntoView({ block: "center" });
+      target.classList.add("highlight");
+      setTimeout(() => target.classList.remove("highlight"), 2500);
+    }
+  }
+
+  const grid = document.querySelector("[data-latest-news]");
+  if (!grid) return;
+  const card = (n, featured) => {
+    const href = `news.html#${n.id}`;
+    const meta = `${n.month >= 0 ? MONTHS.substr(n.month * 3, 3).replace(/^./, c => c.toUpperCase()) + " " : ""}${n.year}`;
+    return `<article class="news-card${featured ? " featured" : ""}">
+      <div class="news-img${n.img ? "" : " ph"}">${n.img ? `<img src="${n.img}" alt="">` : "News image"}</div>
+      <div class="news-body">
+        <div class="news-meta">${meta}${n.tag ? ` <span class="tag">${n.tag}</span>` : ""}</div>
+        <h3><a href="${href}">${n.title}</a></h3>
+        <p>${n.text}</p>
+        ${featured ? `<a href="${href}" class="more">Read more</a>` : ""}
+      </div>
+    </article>`;
+  };
+  fetch("news.html", { cache: "no-cache" })
+    .then(r => r.text())
+    .then(html => {
+      const items = read(new DOMParser().parseFromString(html, "text/html")).slice(0, 3);
+      grid.innerHTML = items.map((n, i) => card(n, i === 0)).join("");
+    })
+    .catch(() => { grid.innerHTML = '<p>See all news on the <a href="news.html">News page</a>.</p>'; });
+})();
+
 (function lightbox() {
   const figures = document.querySelectorAll(".theme-figures img");
   if (!figures.length) return;
