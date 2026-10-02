@@ -1,1 +1,11 @@
 DirectoryIndex home.html index.html
+
+# DreamHost caches CSS, JS and images for 30 days by default, so updates would not show up.
+# "no-cache" makes browsers check with the server on every load; unchanged files still come from cache.
+<IfModule mod_expires.c>
+  ExpiresActive Off
+</IfModule>
+<IfModule mod_headers.c>
+  Header unset Expires
+  Header set Cache-Control "no-cache"
+</IfModule>
